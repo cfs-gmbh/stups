@@ -6,8 +6,8 @@ import {
   useReducer,
   useRef,
   useState,
-} from "react";
-import React from "react";
+} from 'react';
+import React from 'react';
 
 interface Subscription {
   event: string;
@@ -16,15 +16,15 @@ interface Subscription {
 }
 
 export enum SubscriptionsActionType {
-  ADD = "ADD",
-  REMOVE = "REMOVE",
+  ADD = 'ADD',
+  REMOVE = 'REMOVE',
 }
 
 type SubscriptionsAction =
   | { type: SubscriptionsActionType.ADD; payload: Subscription }
   | {
       type: SubscriptionsActionType.REMOVE;
-      payload: Pick<Subscription, "event" | "name">;
+      payload: Pick<Subscription, 'event' | 'name'>;
     };
 
 interface SubscriptionsState {
@@ -49,7 +49,7 @@ function subscriptionsReducer(
     case SubscriptionsActionType.REMOVE: {
       return {
         subscriptions: state.subscriptions.filter(
-          (subscription) =>
+          subscription =>
             !(
               (!action.payload.name &&
                 subscription.event === action.payload.event) ||
@@ -76,14 +76,14 @@ export function useSubscriptions() {
   const context = useContext(SubscriptionsContext);
 
   if (!context) {
-    throw new Error("Missing subscriptions context");
+    throw new Error('Missing subscriptions context');
   }
 
   return context;
 }
 
 export interface SubscriptionsProviderProps {
-  token: string;
+  token?: string;
   endpointUrl: string;
   children: React.ReactNode;
 }
@@ -108,7 +108,7 @@ export function SubscriptionsProvider({
 
     ws.current.onopen = async () => {
       setStatus(ws.current?.readyState ?? SubscriptionsStatus.CLOSED);
-      ws.current?.send(token);
+      ws.current?.send(token ?? 'hello');
     };
 
     ws.current.onclose = () => {
@@ -119,8 +119,7 @@ export function SubscriptionsProvider({
   useEffect(() => {
     if (
       status === SubscriptionsStatus.CLOSED &&
-      token !== "" &&
-      token !== "Bearer undefined"
+      ((token !== '' && token !== 'Bearer undefined') || !token)
     ) {
       connect();
     }
@@ -129,17 +128,17 @@ export function SubscriptionsProvider({
   useEffect(() => {
     if (!ws.current) return;
 
-    ws.current.onmessage = (e) => {
+    ws.current.onmessage = e => {
       state.subscriptions
         .filter(
-          (subscription) =>
+          subscription =>
             subscription.event === e.data ||
-            subscription.event.split("*")[0] ===
-              e.data.substr(0, subscription.event.split("*")[0].length)
+            subscription.event.split('*')[0] ===
+              e.data.substr(0, subscription.event.split('*')[0].length)
         )
-        .forEach((subscription) =>
-          (e.data as string).includes(":")
-            ? subscription.cb((e.data as string).split(":")[1])
+        .forEach(subscription =>
+          (e.data as string).includes(':')
+            ? subscription.cb((e.data as string).split(':')[1])
             : subscription.cb()
         );
     };
