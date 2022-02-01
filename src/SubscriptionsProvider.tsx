@@ -83,7 +83,7 @@ export function useSubscriptions() {
 }
 
 export interface SubscriptionsProviderProps {
-  token?: string;
+  token: string;
   endpointUrl: string;
   children: React.ReactNode;
 }
@@ -108,7 +108,7 @@ export function SubscriptionsProvider({
 
     ws.current.onopen = async () => {
       setStatus(ws.current?.readyState ?? SubscriptionsStatus.CLOSED);
-      ws.current?.send(token ?? 'hello');
+      ws.current?.send(token);
     };
 
     ws.current.onclose = () => {
@@ -119,7 +119,8 @@ export function SubscriptionsProvider({
   useEffect(() => {
     if (
       status === SubscriptionsStatus.CLOSED &&
-      ((token !== '' && token !== 'Bearer undefined') || !token)
+      token !== '' &&
+      token !== 'Bearer undefined'
     ) {
       connect();
     }
