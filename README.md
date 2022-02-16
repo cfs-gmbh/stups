@@ -20,7 +20,7 @@ const App = () => {
 };
 ```
 
-The token attibute is optional and can carry a JWT which is sent to the endpoint, so the client can be authenticated.
+The token attibute needs to carry a JWT in the form **Bearer JWT** which is sent to the endpoint, so the client can be authenticated and identified.
 
 Now the useStups hook can be used in your components.
 
