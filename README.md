@@ -42,7 +42,7 @@ By changing the event string, we can listen for a specific event ('event:123').
 
 ## tip
 
-Beein able to do something on data change is especially useful if you use it for refetching. Because useStups is unopinionated in what it does on events, you might use Apollo or React Query and pass the refetch function of a query to useStups. This way, the query can stay up to date with the server while not interfering with your caching strategy.
+Beeing able to do something on push is especially useful if you use it for refetching. Because stups is unopinionated in what it does on events, you might use Apollo or React Query and pass the refetch function of a query to stups. This way, the query can stay up to date with the server while not interfering with your caching strategy.
 
 ## server side
 
